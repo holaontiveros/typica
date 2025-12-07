@@ -118,7 +118,6 @@ const FontGrid = ({
 
   const FontCard = ({ font }) => {
     const isInComparison = selectedFonts.some(f => f.name === font.name);
-    const canAddToComparison = selectedFonts.length < 6 && !isInComparison;
     
     return (
       <div className={`group bg-white dark:bg-gray-800 border rounded-lg p-4 hover:shadow-lg transition-all duration-200 ${
@@ -174,19 +173,15 @@ const FontGrid = ({
           </button>
           <button
             onClick={() => onFontCompare(font)}
-            disabled={!canAddToComparison}
+            disabled={isInComparison}
             className={`flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-xs rounded border transition-colors ${
               isInComparison
                 ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                : canAddToComparison
-                ? 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800 animate-pulse'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                : 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800 animate-pulse'
             }`}
             title={
               isInComparison
                 ? 'Font already in comparison'
-                : !canAddToComparison
-                ? 'Comparison limit reached (6 fonts max)'
                 : 'Add to comparison'
             }
           >
@@ -202,7 +197,6 @@ const FontGrid = ({
 
   const FontListItem = ({ font }) => {
     const isInComparison = selectedFonts.some(f => f.name === font.name);
-    const canAddToComparison = selectedFonts.length < 6 && !isInComparison;
     
     return (
       <div className={`group bg-white dark:bg-gray-800 border rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
@@ -259,19 +253,15 @@ const FontGrid = ({
             </button>
             <button
               onClick={() => onFontCompare(font)}
-              disabled={!canAddToComparison}
+              disabled={isInComparison}
               className={`flex items-center space-x-1 px-3 py-2 text-xs rounded border transition-colors ${
                 isInComparison
                   ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                  : canAddToComparison
-                  ? 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800 animate-pulse'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                  : 'bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800 animate-pulse'
               }`}
               title={
                 isInComparison
                   ? 'Font already in comparison'
-                  : !canAddToComparison
-                  ? 'Comparison limit reached (6 fonts max)'
                   : 'Add to comparison'
               }
             >

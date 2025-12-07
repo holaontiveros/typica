@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Settings, Palette, Sliders, Menu, X } from 'lucide-react';
+import { Moon, Sun, Settings, Palette, Sliders, Menu, X, Bookmark } from 'lucide-react';
 import { fontManager } from './utils/fontDetection';
 import { useTheme } from './hooks/useTheme';
 import ThemeProvider from './contexts/ThemeProvider';
@@ -41,6 +41,11 @@ function App() {
     return saved ? parseInt(saved) : 50;
   });
   const [gridCurrentPage, setGridCurrentPage] = useState(1);
+  const [savedComparisons, setSavedComparisons] = useState(() => {
+    const saved = localStorage.getItem('typica.savedComparisons');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [showSavedComparisons, setShowSavedComparisons] = useState(false);
 
   const { isDark, toggleTheme } = useTheme();
   
@@ -122,7 +127,7 @@ function App() {
       return; // Don't add duplicates
     }
     
-    // Add font to comparison (no limit)
+    // Add font to comparison
     setSelectedFonts([...selectedFonts, font]);
   };
 
@@ -141,6 +146,43 @@ function App() {
   const clearSelection = () => {
     setSelectedFonts([]);
     setCurrentView('grid');
+  };
+
+  // Save current comparison
+  const saveCurrentComparison = (name) => {
+    if (selectedFonts.length < 2) return;
+    
+    const comparison = {
+      id: Date.now(),
+      name: name.trim(),
+      fonts: selectedFonts.map(f => ({ name: f.name, classification: f.classification })),
+      createdAt: new Date().toISOString(),
+      fontCount: selectedFonts.length
+    };
+    
+    const updatedComparisons = [...savedComparisons, comparison];
+    setSavedComparisons(updatedComparisons);
+    localStorage.setItem('typica.savedComparisons', JSON.stringify(updatedComparisons));
+  };
+
+  // Load saved comparison
+  const loadSavedComparison = (comparison) => {
+    // Find the actual font objects from the fonts array
+    const fontObjects = comparison.fonts.map(savedFont => 
+      fonts.find(f => f.name === savedFont.name)
+    ).filter(Boolean); // Remove any fonts that weren't found
+    
+    setSelectedFonts(fontObjects);
+    if (fontObjects.length >= 2) {
+      setCurrentView('compare');
+    }
+  };
+
+  // Delete saved comparison
+  const deleteSavedComparison = (comparisonId) => {
+    const updatedComparisons = savedComparisons.filter(c => c.id !== comparisonId);
+    setSavedComparisons(updatedComparisons);
+    localStorage.setItem('typica.savedComparisons', JSON.stringify(updatedComparisons));
   };
 
   // Filter fonts based on active filters and search
@@ -296,6 +338,27 @@ function App() {
                 </button>
 
                 <button
+                  onClick={() => {
+                    console.log('Saved comparisons button clicked, current state:', showSavedComparisons);
+                    if (!showSidebar) setShowSidebar(true);
+                    setShowSavedComparisons(!showSavedComparisons);
+                  }}
+                  className={`p-2 rounded-lg transition-colors relative ${
+                    showSavedComparisons 
+                      ? 'bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400' 
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                  title="Saved comparisons"
+                >
+                  <Bookmark className="h-5 w-5" />
+                  {savedComparisons.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {savedComparisons.length}
+                    </span>
+                  )}
+                </button>
+
+                <button
                   onClick={toggleTheme}
                   className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
@@ -349,6 +412,82 @@ function App() {
                 onClearSelection={clearSelection}
                 selectedFonts={selectedFonts}
               />
+            </div>
+          )}
+
+          {/* Saved Comparisons Panel */}
+          {showSavedComparisons && (
+            <div className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    📚 Saved Comparisons ({savedComparisons.length})
+                  </h3>
+                  <button
+                    onClick={() => setShowSavedComparisons(false)}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    title="Close saved comparisons"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              
+              {savedComparisons.length === 0 ? (
+                <div className={`text-sm text-center py-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  No saved comparisons yet
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {savedComparisons.map((comparison) => (
+                      <div 
+                        key={comparison.id}
+                        className={`p-3 rounded border ${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'}`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className={`text-sm font-medium truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                            {comparison.name}
+                          </h4>
+                          <button
+                            onClick={() => deleteSavedComparison(comparison.id)}
+                            className="text-red-400 hover:text-red-600 transition-colors"
+                            title="Delete saved comparison"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <div className={`text-xs mb-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                          {comparison.fontCount} fonts • {new Date(comparison.createdAt).toLocaleDateString()}
+                        </div>
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {comparison.fonts.slice(0, 3).map((font, index) => (
+                            <span 
+                              key={index}
+                              className={`text-xs px-1 py-0.5 rounded ${isDark ? 'bg-gray-600 text-gray-300' : 'bg-gray-200 text-gray-600'}`}
+                            >
+                              {font.name}
+                            </span>
+                          ))}
+                          {comparison.fonts.length > 3 && (
+                            <span className={`text-xs px-1 py-0.5 rounded ${isDark ? 'bg-gray-600 text-gray-300' : 'bg-gray-200 text-gray-600'}`}>
+                              +{comparison.fonts.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => loadSavedComparison(comparison)}
+                          className={`w-full text-xs py-1 px-2 rounded transition-colors ${
+                            isDark 
+                              ? 'bg-purple-900 text-purple-200 hover:bg-purple-800' 
+                              : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                          }`}
+                        >
+                          Load Comparison
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -423,6 +562,7 @@ function App() {
               fontSize={fontSize}
               textColor={textColor}
               onRemoveFont={handleRemoveFontFromComparison}
+              onSaveComparison={saveCurrentComparison}
             />
           )}
 

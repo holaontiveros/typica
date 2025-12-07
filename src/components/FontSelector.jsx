@@ -164,7 +164,6 @@ const FontSelector = ({ fonts, onFontSelect, onFontCompare, selectedFonts = [], 
             <ul ref={listRef} className="py-1">
               {filteredFonts.map((font, index) => {
                 const isInComparison = selectedFonts.some(f => f.name === font.name);
-                const canAddToComparison = selectedFonts.length < 6 && !isInComparison;
                 
                 return (
                   <li
@@ -200,19 +199,15 @@ const FontSelector = ({ fonts, onFontSelect, onFontCompare, selectedFonts = [], 
                     <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={(e) => handleFontCompare(font, e)}
-                        disabled={!canAddToComparison}
+                        disabled={isInComparison}
                         className={`p-1 transition-colors rounded ${
                           isInComparison
                             ? 'text-gray-400 cursor-not-allowed'
-                            : canAddToComparison
-                            ? 'text-gray-400 hover:text-green-500'
-                            : 'text-gray-400 cursor-not-allowed'
+                            : 'text-gray-400 hover:text-green-500'
                         }`}
                         title={
                           isInComparison
                             ? 'Font already in comparison'
-                            : !canAddToComparison
-                            ? 'Comparison limit reached (6 fonts max)'
                             : 'Add to comparison'
                         }
                       >

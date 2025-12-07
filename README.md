@@ -11,7 +11,7 @@ A beautiful font exploration and comparison tool built as a native desktop appli
 - Real-time font filtering and search
 
 🔍 **Font Comparison**
-- Side-by-side comparison of up to 6 fonts
+- Side-by-side comparison of multiple fonts
 - Multiple preview sizes (16px, 24px, 32px, 48px)
 - Character set comparison (uppercase, lowercase, numbers, symbols)
 - Custom text input for real-world testing
