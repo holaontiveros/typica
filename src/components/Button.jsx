@@ -15,20 +15,20 @@ const Button = React.forwardRef(({
   ...props
 }, ref) => {
   
-  const baseClasses = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer";
+  const baseClasses = "inline-flex cursor-pointer items-center justify-center font-medium transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50";
   
   const variants = {
     // Primary action button (blue)
-    primary: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600",
+    primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600",
     
     // Secondary action button (gray)
-    secondary: "bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white hover:!text-gray-900 dark:hover:!text-white border border-gray-300 dark:border-gray-600 focus:ring-gray-500",
+    secondary: "hover:text-red border border-gray-300 bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white!",
     
     // Success/positive action (green)
-    success: "bg-green-50 hover:bg-green-100 text-green-600 border border-green-200 dark:bg-green-900 dark:hover:bg-green-800 dark:text-green-400 dark:border-green-600 focus:ring-green-500",
+    success: "border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 focus:ring-green-500 dark:border-green-600 dark:bg-green-900 dark:text-green-400 dark:hover:bg-green-800",
     
     // Warning/attention (yellow)
-    warning: "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border border-yellow-200 dark:bg-yellow-900 dark:hover:bg-yellow-800 dark:text-yellow-300 dark:border-yellow-600 focus:ring-yellow-500",
+    warning: "border border-yellow-200 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 focus:ring-yellow-500 dark:border-yellow-600 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800",
     
     // Danger/destructive (red)
     danger: "bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 dark:border-red-800 focus:ring-red-500",

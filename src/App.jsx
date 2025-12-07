@@ -224,7 +224,7 @@ function App() {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen transition-colors duration-200`}>
 
 
       {/* Header */}
