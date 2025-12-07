@@ -78,7 +78,7 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
               <button
                 onClick={() => onFontCompare && onFontCompare(font)}
                 className="flex items-center space-x-1 px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 
-                         text-white rounded-lg transition-colors"
+                         text-white rounded-lg transition-colors cursor-pointer"
                 title="Add to comparison"
               >
                 <Plus className="h-4 w-4" />
@@ -89,7 +89,7 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
             <button
               onClick={() => onFontCompare && onFontCompare(font)}
               className="flex items-center space-x-1 px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 
-                       text-white rounded-lg transition-colors"
+                       text-white rounded-lg transition-colors cursor-pointer"
               title="Add to comparison"
             >
               <Plus className="h-4 w-4" />
@@ -99,7 +99,7 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
           <button
             onClick={handleCopyFontName}
             className="flex items-center space-x-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 
-                     rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                     rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
             title="Copy font name"
           >
             <Copy className="h-4 w-4" />
@@ -109,7 +109,7 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
           <button
             onClick={handleCopyText}
             className="flex items-center space-x-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 
-                     rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                     rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
             title="Copy preview text"
           >
             <Copy className="h-4 w-4" />
@@ -119,7 +119,7 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
           <button
             onClick={handleShare}
             className="flex items-center space-x-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 
-                     rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                     rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
             title="Share font"
           >
             <Share2 className="h-4 w-4" />

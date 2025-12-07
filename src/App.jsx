@@ -10,6 +10,7 @@ import FontComparison from './components/FontComparison';
 import ControlPanel from './components/ControlPanel';
 import TypicaLogo from './components/TypicaLogo';
 import FilterPanel from './components/FilterPanel';
+import Button, { IconButton, NavigationButton } from './components/Button';
 
 // Main App Component
 function App() {
@@ -233,7 +234,7 @@ function App() {
             {/* Logo and Title */}
             <button 
               onClick={() => setCurrentView('grid')}
-              className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
             >
               <TypicaLogo className="h-8 w-8" />
               <h1 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Typica</h1>
@@ -246,39 +247,29 @@ function App() {
             <div className="flex items-center space-x-2">
               {/* View Controls */}
               <div className="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                <button
+                <NavigationButton
                   onClick={() => setCurrentView('grid')}
-                  className={`px-3 py-1 text-sm rounded ${
-                    currentView === 'grid' 
-                      ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow' 
-                      : 'text-gray-600 dark:text-gray-300'
-                  }`}
+                  active={currentView === 'grid'}
+                  size="sm"
                 >
                   Grid
-                </button>
-                <button
+                </NavigationButton>
+                <NavigationButton
                   onClick={() => setCurrentView('preview')}
                   disabled={selectedFonts.length === 0}
-                  className={`px-3 py-1 text-sm rounded ${
-                    currentView === 'preview' && selectedFonts.length > 0
-                      ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow' 
-                      : 'text-gray-600 dark:text-gray-300 disabled:opacity-50'
-                  }`}
+                  active={currentView === 'preview' && selectedFonts.length > 0}
+                  size="sm"
                 >
                   Preview
-                </button>
-                <button
+                </NavigationButton>
+                <NavigationButton
                   onClick={() => setCurrentView('compare')}
                   disabled={selectedFonts.length < 2}
-                  className={`px-3 py-1 text-sm rounded transition-all duration-200 ${
-                    currentView === 'compare' && selectedFonts.length >= 2
-                      ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow' 
-                      : selectedFonts.length >= 2
-                      ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 border-2 border-green-400 dark:border-green-600 animate-pulse'
-                      : selectedFonts.length === 1
-                      ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 border border-yellow-400 dark:border-yellow-600'
-                      : 'text-gray-600 dark:text-gray-300 disabled:opacity-50'
-                  }`}
+                  active={currentView === 'compare' && selectedFonts.length >= 2}
+                  special={selectedFonts.length >= 2 ? 'compare-ready' : selectedFonts.length === 1 ? 'compare-one' : undefined}
+                  animate={selectedFonts.length >= 2 && currentView !== 'compare'}
+                  count={selectedFonts.length}
+                  size="sm"
                   title={
                     selectedFonts.length === 0 
                       ? 'Select at least 2 fonts to compare'
@@ -288,82 +279,63 @@ function App() {
                   }
                 >
                   {selectedFonts.length >= 2 && currentView !== 'compare' && '🎯 '}
-                  Compare ({selectedFonts.length})
+                  Compare
                   {selectedFonts.length >= 2 && currentView !== 'compare' && ' →'}
-                </button>
+                </NavigationButton>
               </div>
 
               {/* Action Buttons */}
               <div className="flex items-center space-x-2">
-                <button
+                <IconButton
                   onClick={() => setShowSidebar(!showSidebar)}
-                  className={`p-2 rounded-lg transition-colors ${
-                    showSidebar 
-                      ? 'bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400' 
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
+                  variant={showSidebar ? 'purple' : 'secondary'}
                   title="Toggle sidebar"
-                >
-                  <Menu className="h-5 w-5" />
-                </button>
+                  icon={<Menu className="h-5 w-5" />}
+                />
 
-                <button
+                <IconButton
                   onClick={() => {
                     if (!showSidebar) setShowSidebar(true);
                     setShowFilters(!showFilters);
                   }}
-                  className={`p-2 rounded-lg transition-colors ${
-                    showFilters 
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' 
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
+                  variant={showFilters ? 'primary' : 'secondary'}
                   title="Filter fonts"
-                >
-                  <Settings className="h-5 w-5" />
-                </button>
+                  icon={<Settings className="h-5 w-5" />}
+                />
                 
-                <button
+                <IconButton
                   onClick={() => {
                     if (!showSidebar) setShowSidebar(true);
                     setShowControls(!showControls);
                   }}
-                  className={`p-2 rounded-lg transition-colors ${
-                    showControls 
-                      ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' 
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
+                  variant={showControls ? 'success' : 'secondary'}
                   title="Font controls"
-                >
-                  <Sliders className="h-5 w-5" />
-                </button>
+                  icon={<Sliders className="h-5 w-5" />}
+                />
 
-                <button
-                  onClick={() => {
-                    console.log('Saved comparisons button clicked, current state:', showSavedComparisons);
-                    if (!showSidebar) setShowSidebar(true);
-                    setShowSavedComparisons(!showSavedComparisons);
-                  }}
-                  className={`p-2 rounded-lg transition-colors relative ${
-                    showSavedComparisons 
-                      ? 'bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400' 
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                  title="Saved comparisons"
-                >
-                  <Bookmark className="h-5 w-5" />
+                <div className="relative">
+                  <IconButton
+                    onClick={() => {
+                      console.log('Saved comparisons button clicked, current state:', showSavedComparisons);
+                      if (!showSidebar) setShowSidebar(true);
+                      setShowSavedComparisons(!showSavedComparisons);
+                    }}
+                    variant={showSavedComparisons ? 'purple' : 'secondary'}
+                    title="Saved comparisons"
+                    icon={<Bookmark className="h-5 w-5" />}
+                  />
                   {savedComparisons.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {savedComparisons.length}
                     </span>
                   )}
-                </button>
+                </div>
 
-                <button
+                <IconButton
                   onClick={toggleTheme}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                >
-                  {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                </button>
+                  variant="secondary"
+                  icon={isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                />
               </div>
             </div>
           </div>
@@ -425,7 +397,7 @@ function App() {
                   </h3>
                   <button
                     onClick={() => setShowSavedComparisons(false)}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer"
                     title="Close saved comparisons"
                   >
                     <X className="h-4 w-4" />
@@ -441,19 +413,24 @@ function App() {
                   {savedComparisons.map((comparison) => (
                       <div 
                         key={comparison.id}
-                        className={`p-3 rounded border ${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'}`}
+                        className={`p-3 rounded border cursor-pointer transition-all duration-200 hover:shadow-md ${
+                          isDark 
+                            ? 'bg-gray-700 border-gray-600 hover:bg-gray-600 hover:border-gray-500' 
+                            : 'bg-gray-50 border-gray-200 hover:bg-white hover:border-gray-300'
+                        }`}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h4 className={`text-sm font-medium truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>
                             {comparison.name}
                           </h4>
-                          <button
+                          <IconButton
                             onClick={() => deleteSavedComparison(comparison.id)}
-                            className="text-red-400 hover:text-red-600 transition-colors"
+                            variant="ghost"
+                            size="xs"
+                            className="text-red-400 hover:text-red-600"
                             title="Delete saved comparison"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
+                            icon={<X className="h-3 w-3" />}
+                          />
                         </div>
                         <div className={`text-xs mb-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                           {comparison.fontCount} fonts • {new Date(comparison.createdAt).toLocaleDateString()}
@@ -473,16 +450,14 @@ function App() {
                             </span>
                           )}
                         </div>
-                        <button
+                        <Button
                           onClick={() => loadSavedComparison(comparison)}
-                          className={`w-full text-xs py-1 px-2 rounded transition-colors ${
-                            isDark 
-                              ? 'bg-purple-900 text-purple-200 hover:bg-purple-800' 
-                              : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-                          }`}
+                          variant="purple"
+                          size="sm"
+                          className="w-full"
                         >
                           Load Comparison
-                        </button>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -509,7 +484,7 @@ function App() {
                     <span className="truncate">{font.name}</span>
                     <button
                       onClick={() => handleRemoveFontFromComparison(font)}
-                      className="text-red-400 hover:text-red-600 transition-colors ml-2"
+                      className="text-red-400 hover:text-red-600 transition-colors ml-2 cursor-pointer"
                       title="Remove from comparison"
                     >
                       <X className="h-3 w-3" />

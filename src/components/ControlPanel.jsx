@@ -1,5 +1,6 @@
 import React from 'react';
 import { Type, Palette, Sliders, RotateCcw, Trash2 } from 'lucide-react';
+import Button, { PresetButton } from './Button';
 
 const ControlPanel = ({ 
   previewText, 
@@ -62,15 +63,15 @@ const ControlPanel = ({
           <Sliders className="h-4 w-4 mr-2" />
           Controls
         </h3>
-        <button
+        <Button
           onClick={handleResetSettings}
-          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 
-                   flex items-center space-x-1"
+          variant="ghost"
+          size="xs"
+          icon={<RotateCcw className="h-3 w-3" />}
           title="Reset all settings"
         >
-          <RotateCcw className="h-3 w-3" />
-          <span>Reset</span>
-        </button>
+          Reset
+        </Button>
       </div>
 
       {/* Preview Text */}
@@ -95,26 +96,26 @@ const ControlPanel = ({
           <div className="text-xs text-gray-500 dark:text-gray-400">Quick presets:</div>
           <div className="grid grid-cols-1 gap-1">
             {presetTexts.slice(0, 5).map((text, index) => (
-              <button
+              <PresetButton
                 key={index}
                 onClick={() => handlePresetText(text)}
-                className="text-left text-xs p-2 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 
-                         rounded hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors truncate"
+                size="xs"
+                className="text-left truncate"
                 title={text}
               >
                 {text}
-              </button>
+              </PresetButton>
             ))}
           </div>
           
-          <button
+          <Button
             onClick={handleResetText}
-            className="w-full text-xs p-2 bg-blue-600 dark:bg-blue-700 text-white 
-                     rounded border border-blue-700 dark:border-blue-600 
-                     hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+            variant="primary"
+            size="xs"
+            className="w-full"
           >
             Reset to default
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -140,17 +141,14 @@ const ControlPanel = ({
             <span>10px</span>
             <div className="flex space-x-2">
               {[12, 16, 24, 32, 48, 72].map(size => (
-                <button
+                <PresetButton
                   key={size}
                   onClick={() => onFontSizeChange(size)}
-                  className={`px-2 py-1 rounded transition-colors ${
-                    fontSize === size 
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' 
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
+                  active={fontSize === size}
+                  size="xs"
                 >
                   {size}
-                </button>
+                </PresetButton>
               ))}
             </div>
             <span>100px</span>
@@ -173,7 +171,7 @@ const ControlPanel = ({
               value={textColor}
               onChange={(e) => onTextColorChange(e.target.value)}
               className="w-12 h-10 border border-gray-300 dark:border-gray-600 rounded cursor-pointer 
-                       bg-white dark:bg-gray-700"
+                       bg-white dark:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors"
             />
             <input
               type="text"
@@ -194,7 +192,7 @@ const ControlPanel = ({
                 <button
                   key={color}
                   onClick={() => onTextColorChange(color)}
-                  className={`w-8 h-8 rounded border-2 transition-all ${
+                  className={`w-8 h-8 rounded border-2 transition-all cursor-pointer ${
                     textColor === color 
                       ? 'border-blue-500 dark:border-blue-400 scale-110' 
                       : 'border-gray-300 dark:border-gray-600 hover:scale-105'
@@ -220,16 +218,14 @@ const ControlPanel = ({
             </span>
           </div>
           
-          <button
+          <Button
             onClick={onClearSelection}
-            className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm 
-                     bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 
-                     border border-red-200 dark:border-red-800 rounded-lg
-                     hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+            variant="danger"
+            className="w-full"
+            icon={<Trash2 className="h-4 w-4" />}
           >
-            <Trash2 className="h-4 w-4" />
-            <span>Clear Selection</span>
-          </button>
+            Clear Selection
+          </Button>
         </div>
       )}
 

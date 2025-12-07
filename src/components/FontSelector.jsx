@@ -171,7 +171,7 @@ const FontSelector = ({ fonts, onFontSelect, onFontCompare, selectedFonts = [], 
                     className={`px-4 py-2 cursor-pointer group flex items-center justify-between
                                ${index === selectedIndex 
                                  ? 'bg-blue-50 dark:bg-blue-900/50' 
-                                 : 'hover:bg-gray-50 dark:hover:bg-gray-600'
+                                 : 'hover:bg-gray-100 dark:hover:bg-gray-600'
                                } ${isInComparison ? 'bg-green-50 dark:bg-green-900/20' : ''}`}
                     onClick={() => handleFontSelect(font)}
                   >

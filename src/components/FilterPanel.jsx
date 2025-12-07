@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Filter, X } from 'lucide-react';
+import { FilterButton } from './Button';
 
 const FilterPanel = ({ fonts, activeFilters, onFiltersChange }) => {
   // Calculate font counts by classification and weight
@@ -90,7 +91,7 @@ const FilterPanel = ({ fonts, activeFilters, onFiltersChange }) => {
           <button
             onClick={handleClearFilters}
             className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 
-                     flex items-center space-x-1"
+                     flex items-center space-x-1 cursor-pointer"
           >
             <X className="h-3 w-3" />
             <span>Clear all</span>
@@ -116,7 +117,7 @@ const FilterPanel = ({ fonts, activeFilters, onFiltersChange }) => {
                  filter}
                 <button
                   onClick={() => handleFilterToggle(filter)}
-                  className="ml-1 hover:text-blue-600 dark:hover:text-blue-300"
+                  className="ml-1 hover:text-blue-600 dark:hover:text-blue-300 cursor-pointer"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -136,42 +137,18 @@ const FilterPanel = ({ fonts, activeFilters, onFiltersChange }) => {
           const isActive = activeFilters.includes(option.key);
           
           return (
-            <button
+            <FilterButton
               key={option.key}
               onClick={() => handleFilterToggle(option.key)}
               disabled={count === 0}
-              className={`w-full text-left p-3 rounded-lg border transition-all duration-150
-                ${isActive 
-                  ? 'bg-blue-50 dark:bg-blue-900/50 border-blue-300 dark:border-blue-600' 
-                  : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-                }
-                ${count === 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-              `}
+              active={isActive}
+              count={count}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className={`text-sm font-medium ${
-                  isActive 
-                    ? 'text-blue-900 dark:text-blue-100' 
-                    : 'text-gray-900 dark:text-white'
-                }`}>
-                  {option.label}
-                </span>
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  isActive 
-                    ? 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200' 
-                    : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
-                }`}>
-                  {count}
-                </span>
+              <div>
+                <div className="font-medium">{option.label}</div>
+                <div className="text-xs opacity-75">{option.description}</div>
               </div>
-              <p className={`text-xs ${
-                isActive 
-                  ? 'text-blue-700 dark:text-blue-300' 
-                  : 'text-gray-500 dark:text-gray-400'
-              }`}>
-                {option.description}
-              </p>
-            </button>
+            </FilterButton>
           );
         })}
       </div>
@@ -190,7 +167,7 @@ const FilterPanel = ({ fonts, activeFilters, onFiltersChange }) => {
               key={option.key}
               onClick={() => handleFilterToggle(option.key)}
               disabled={count === 0}
-              className={`w-full text-left p-3 rounded-lg border transition-all duration-150
+              className={`w-full text-left p-3 rounded-lg border transition-all duration-150 cursor-pointer
                 ${isActive 
                   ? 'bg-green-50 dark:bg-green-900/50 border-green-300 dark:border-green-600' 
                   : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -240,7 +217,7 @@ const FilterPanel = ({ fonts, activeFilters, onFiltersChange }) => {
               key={option.key}
               onClick={() => handleFilterToggle(option.key)}
               disabled={count === 0}
-              className={`w-full text-left p-3 rounded-lg border transition-all duration-150
+              className={`w-full text-left p-3 rounded-lg border transition-all duration-150 cursor-pointer
                 ${isActive 
                   ? 'bg-purple-50 dark:bg-purple-900/50 border-purple-300 dark:border-purple-600' 
                   : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
