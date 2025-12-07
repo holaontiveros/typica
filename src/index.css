@@ -17,6 +17,7 @@ body {
 /* Dark mode support */
 html.dark {
   color-scheme: dark;
+  background-color: var(--color-gray-900);
 }
 
 html:not(.dark), html.light {
