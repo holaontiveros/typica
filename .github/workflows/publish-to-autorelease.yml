@@ -2,8 +2,8 @@ name: 'publish'
 
 on:
   push:
-    branches:
-      - release
+    tags:
+      - "v*"
 
 # This is the example from the readme.
 # On each push to the `release` branch it will create or update a GitHub release, build your app, and upload the artifacts to the release.
@@ -53,10 +53,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: 'App v__VERSION__'
+          tagName: ${{ github.ref_name }}         # REQUIRED
+          releaseName: "Release ${{ github.ref_name }}"  # REQUIRED
           releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           projectPath: src-tauri
           args: ${{ matrix.args }}
