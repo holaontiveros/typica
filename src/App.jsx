@@ -229,7 +229,7 @@ function App() {
 
       {/* Header */}
       <header className={`border-b sticky top-0 z-10 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Title */}
             <button 
@@ -343,7 +343,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <div className="flex max-w-7xl mx-auto">
+      <div className="flex mx-auto">
         {/* Sidebar */}
         {showSidebar && (
           <aside className={`w-80 border-r ${isDark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'}`}>

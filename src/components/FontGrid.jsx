@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { Eye, Plus, Grid3x3, List, ChevronDown } from 'lucide-react';
 import Button, { ToggleButton, CompareButton } from './Button';
+import Pagination from './ui/Pagination';
+import FontCard from './font/FontCard';
 
 const FontGrid = ({ 
   fonts, 
@@ -19,8 +21,6 @@ const FontGrid = ({
   currentPage,
   onCurrentPageChange
 }) => {
-  // Remove local state - now using props from parent
-
   // Sort and paginate fonts
   const sortedFonts = useMemo(() => {
     const sorted = [...fonts].sort((a, b) => {
@@ -53,209 +53,19 @@ const FontGrid = ({
     onCurrentPageChange(1);
   };
 
-  // Render pagination
-  const renderPagination = () => {
-    // Don't show pagination when showing all items
-    if (totalPages <= 1 || itemsPerPage === -1) return null;
-
-    const pages = [];
-    const maxVisiblePages = 7;
-    
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-    
-    if (endPage - startPage < maxVisiblePages - 1) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    // Previous button
-    pages.push(
-      <button
-        key="prev"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-l-lg cursor-pointer
-                 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Previous
-      </button>
-    );
-
-    // Page numbers
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(
-        <button
-          key={i}
-          onClick={() => handlePageChange(i)}
-          className={`px-3 py-2 text-sm border-t border-b border-r border-gray-300 dark:border-gray-600 cursor-pointer
-                     ${i === currentPage 
-                       ? 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-400' 
-                       : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-        >
-          {i}
-        </button>
-      );
-    }
-
-    // Next button
-    pages.push(
-      <button
-        key="next"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-r-lg cursor-pointer
-                 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Next
-      </button>
-    );
-
-    return (
-      <div className="flex justify-center items-center space-x-0">
-        {pages}
-      </div>
-    );
-  };
-
-  const FontCard = ({ font }) => {
-    const isInComparison = selectedFonts.some(f => f.name === font.name);
-    
-    return (
-      <div className={`group bg-white dark:bg-gray-800 border rounded-lg p-4 hover:shadow-lg transition-all duration-200 ${
-        isInComparison 
-          ? 'border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900/20' 
-          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
-      }`}>
-        {/* Font Name */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1 truncate">
-              {font.name}
-            </h3>
-            {isInComparison && (
-              <span className="text-xs bg-green-100 dark:bg-green-800 text-green-600 dark:text-green-200 px-2 py-1 rounded">
-                In Comparison
-              </span>
-            )}
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-            {font.classification}
-            {font.weight && font.weight !== 'regular' && ` • ${font.weight}`}
-            {font.isDefault && ' • Default'}
-          </div>
-        </div>
-
-        {/* Preview Text */}
-        <div 
-          className="mb-4 flex items-center overflow-hidden"
-          style={{ 
-            fontFamily: font.name,
-            fontSize: `${fontSize}px`,
-            color: textColor,
-            lineHeight: '1.3',
-            minHeight: `${Math.max(64, fontSize + 20)}px`
-          }}
-        >
-          <span className="truncate">
-            {previewText}
-          </span>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            onClick={() => onFontSelect(font)}
-            variant="primary"
-            size="xs"
-            className="flex-1"
-            icon={<Eye className="h-3 w-3" />}
-          >
-            Preview
-          </Button>
-          <CompareButton
-            onClick={() => onFontCompare(font)}
-            inComparison={isInComparison}
-            animate={!isInComparison}
-            size="xs"
-            className="flex-1"
-            icon={<Plus className="h-3 w-3" />}
-            title={isInComparison ? 'Font already in comparison' : 'Add to comparison'}
-          >
-            {isInComparison ? 'Added' : 'Compare'}
-          </CompareButton>
-        </div>
-      </div>
-    );
-  };
-
   const FontListItem = ({ font }) => {
-    const isInComparison = selectedFonts.some(f => f.name === font.name);
-    
     return (
-      <div className={`group bg-white dark:bg-gray-800 border rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
-        isInComparison 
-          ? 'border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900/20' 
-          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
-      }`}>
-        <div className="flex items-center justify-between">
-          <div className="flex-1 min-w-0">
-            {/* Font Info */}
-            <div className="flex items-center space-x-3 mb-2">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-                {font.name}
-              </h3>
-              <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                {font.classification}
-                {font.weight && font.weight !== 'regular' && ` • ${font.weight}`}
-              </span>
-              {font.isDefault && (
-                <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
-                  Default
-                </span>
-              )}
-              {isInComparison && (
-                <span className="text-xs bg-green-100 dark:bg-green-800 text-green-600 dark:text-green-200 px-2 py-1 rounded">
-                  In Comparison
-                </span>
-              )}
-            </div>
-            
-            {/* Preview */}
-            <div 
-              className="text-lg truncate"
-              style={{ 
-                fontFamily: font.name,
-                fontSize: `${fontSize}px`,
-                color: textColor
-              }}
-            >
-              {previewText}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button
-              onClick={() => onFontSelect(font)}
-              variant="primary"
-              size="xs"
-              icon={<Eye className="h-3 w-3" />}
-            >
-              Preview
-            </Button>
-            <CompareButton
-              onClick={() => onFontCompare(font)}
-              inComparison={isInComparison}
-              animate={!isInComparison}
-              size="xs"
-              icon={<Plus className="h-3 w-3" />}
-              title={isInComparison ? 'Font already in comparison' : 'Add to comparison'}
-            >
-              {isInComparison ? 'Added' : 'Compare'}
-            </CompareButton>
-          </div>
-        </div>
-      </div>
+      <FontCard 
+        font={font}
+        previewText={previewText}
+        fontSize={fontSize}
+        textColor={textColor}
+        onFontSelect={onFontSelect}
+        onFontCompare={onFontCompare}
+        selectedFonts={selectedFonts}
+        variant="default"
+        className="hover:shadow-none border-b border-gray-200 dark:border-gray-700 rounded-none border-l-0 border-r-0 border-t-0 last:border-b-0"
+      />
     );
   };
 
@@ -344,13 +154,31 @@ const FontGrid = ({
       }>
         {currentFonts.map(font => 
           viewMode === 'grid' 
-            ? <FontCard key={font.name} font={font} />
+            ? <FontCard 
+                key={font.name} 
+                font={font} 
+                previewText={previewText}
+                fontSize={fontSize}
+                textColor={textColor}
+                onFontSelect={onFontSelect}
+                onFontCompare={onFontCompare}
+                selectedFonts={selectedFonts}
+              />
             : <FontListItem key={font.name} font={font} />
         )}
       </div>
 
       {/* Pagination */}
-      {renderPagination()}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={handleItemsPerPageChange}
+        totalItems={sortedFonts.length}
+        showItemsPerPage={false}
+        className="mb-8"
+      />
 
       {/* Empty State */}
       {fonts.length === 0 && (

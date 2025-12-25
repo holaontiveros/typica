@@ -134,7 +134,7 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
           Current Preview ({fontSize}px)
         </div>
         <div 
-          className="leading-relaxed break-words"
+          className="leading-relaxed wrap-break-word"
           style={{ 
             fontFamily: font.name,
             fontSize: `${fontSize}px`,
@@ -155,11 +155,11 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
         <div className="space-y-4">
           {fontSizes.map(size => (
             <div key={size} className="flex items-baseline space-x-4">
-              <div className="text-sm text-gray-500 dark:text-gray-400 w-12 flex-shrink-0">
+              <div className="text-sm text-gray-500 dark:text-gray-400 w-12 shrink-0">
                 {size}px
               </div>
               <div 
-                className="flex-1 text-gray-900 dark:text-white break-words"
+                className="flex-1 text-gray-900 dark:text-white wrap-break-word"
                 style={{ 
                   fontFamily: font.name,
                   fontSize: `${size}px`,
@@ -191,7 +191,7 @@ const FontPreview = ({ font, previewText, fontSize, textColor, selectedFonts = [
                 {index === 6 && 'Sample Text'}
               </div>
               <div 
-                className="text-lg text-gray-900 dark:text-white leading-relaxed break-words"
+                className="text-lg text-gray-900 dark:text-white leading-relaxed wrap-break-word"
                 style={{ 
                   fontFamily: font.name,
                   color: textColor

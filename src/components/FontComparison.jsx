@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { X, Copy, Download, RotateCcw, Save, Bookmark, Grid3x3, List } from 'lucide-react';
-import Button, { ToggleButton, PresetButton } from './Button';
+import { Bookmark, Copy, Grid3x3, List, RotateCcw, X } from 'lucide-react';
+import { useState } from 'react';
+import Button, { PresetButton, ToggleButton } from './Button';
+import FontCard from './font/FontCard';
+import Modal from './ui/Modal';
 
 const FontComparison = ({ fonts, previewText, fontSize, textColor, onRemoveFont, onSaveComparison }) => {
   const [comparisonText, setComparisonText] = useState(previewText);
@@ -120,7 +122,7 @@ const FontComparison = ({ fonts, previewText, fontSize, textColor, onRemoveFont,
           className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg 
                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
                    focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                   placeholder-gray-500 dark:placeholder-gray-400 resize-vertical min-h-[80px]"
+                   placeholder-gray-500 dark:placeholder-gray-400 resize-vertical min-h-20"
         />
         
         {/* Quick Text Options */}
@@ -152,62 +154,21 @@ const FontComparison = ({ fonts, previewText, fontSize, textColor, onRemoveFont,
           'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6'
         }`}>
           {fonts.map((font, index) => (
-            <div 
+            <FontCard
               key={`${font.name}-${index}`}
-              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
-            >
-              {/* Font Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-900 bg-gray-50 dark:bg-gray-750">
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-                    {font.name}
-                  </h3>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                    {font.classification}
-                    {font.weight && font.weight !== 'regular' && ` • ${font.weight}`}
-                    {font.isDefault && ' • Default'}
-                  </div>
-                </div>
-                
-                <button
-                  onClick={() => handleRemoveFont(font)}
-                  className="p-1 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
-                  title="Remove from comparison"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* Font Preview */}
-              <div className="p-4">
-                <div 
-                  className="leading-relaxed break-words min-h-[120px] flex items-center"
-                  style={{ 
-                    fontFamily: font.name,
-                    fontSize: `${fontSize}px`,
-                    color: textColor,
-                    lineHeight: '1.4'
-                  }}
-                >
-                  {comparisonText}
-                </div>
-              </div>
-
-              {/* Font Details */}
-              <div className="px-4 pb-4 space-y-2">
-                <div className="text-xs">
-                  <span className="text-gray-500 dark:text-gray-400">CSS:</span>
-                  <div className="font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 p-1 rounded text-xs mt-1">
-                    font-family: "{font.name}";
-                  </div>
-                </div>
-              </div>
-            </div>
+              font={font}
+              previewText={comparisonText}
+              fontSize={fontSize}
+              textColor={textColor}
+              variant="comparison"
+              showRemove={true}
+              onRemoveFont={handleRemoveFont}
+            />
           ))}
         </div>
       ) : (
         /* List View */
-        <div className="space-y-3">
+        <div className="space-y-4">
           {fonts.map((font, index) => (
             <div 
               key={`${font.name}-${index}`}
@@ -255,7 +216,7 @@ const FontComparison = ({ fonts, previewText, fontSize, textColor, onRemoveFont,
                 {/* Remove Button */}
                 <button
                   onClick={() => handleRemoveFont(font)}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors ml-4 cursor-pointer"
+                  className="p-2 text-gray-400 hover:text-red-500 transition-colors ml-4 cursor-pointer shrink-0"
                   title="Remove from comparison"
                 >
                   <X className="h-4 w-4" />
@@ -267,76 +228,31 @@ const FontComparison = ({ fonts, previewText, fontSize, textColor, onRemoveFont,
       )}
 
       {/* Size Comparison */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Size Comparison
         </h3>
         
-        <div className="space-y-6">
-          {[16, 24, 32, 48].map(size => (
-            <div key={size} className="border-b border-gray-100 dark:border-gray-700 pb-4 last:border-b-0">
-              <div className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+        <div className="space-y-4">
+          {[12, 16, 24, 32, 48].map(size => (
+            <div key={size} className="space-y-2">
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 {size}px
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {fonts.map((font, index) => (
-                  <div key={`${font.name}-${size}-${index}`} className="flex items-baseline space-x-4">
-                    <div className="w-32 text-sm text-gray-600 dark:text-gray-300 truncate flex-shrink-0">
+                  <div key={`${font.name}-${index}-${size}`} className="flex items-baseline space-x-4">
+                    <div className="w-32 text-sm text-gray-600 dark:text-gray-300 truncate shrink-0">
                       {font.name}
                     </div>
                     <div 
-                      className="flex-1"
                       style={{ 
                         fontFamily: font.name,
                         fontSize: `${size}px`,
-                        color: textColor,
-                        lineHeight: '1.2'
-                      }}
-                    >
-                      {comparisonText.length > 50 
-                        ? 'The quick brown fox jumps over the lazy dog' 
-                        : comparisonText}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Character Set Comparison */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Character Set Comparison
-        </h3>
-        
-        <div className="space-y-6">
-          {[
-            { label: 'Uppercase', text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
-            { label: 'Lowercase', text: 'abcdefghijklmnopqrstuvwxyz' },
-            { label: 'Numbers', text: '1234567890' },
-            { label: 'Symbols', text: '!@#$%^&*()[]{}|;:,.<>?' }
-          ].map(({ label, text }) => (
-            <div key={label} className="border-b border-gray-100 dark:border-gray-700 pb-4 last:border-b-0">
-              <div className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                {label}
-              </div>
-              <div className="space-y-3">
-                {fonts.map((font, index) => (
-                  <div key={`${font.name}-${label}-${index}`} className="flex items-center space-x-4">
-                    <div className="w-32 text-sm text-gray-600 dark:text-gray-300 truncate flex-shrink-0">
-                      {font.name}
-                    </div>
-                    <div 
-                      className="flex-1 font-normal"
-                      style={{ 
-                        fontFamily: font.name,
-                        fontSize: '18px',
                         color: textColor
                       }}
                     >
-                      {text}
+                      {comparisonText}
                     </div>
                   </div>
                 ))}
@@ -346,100 +262,70 @@ const FontComparison = ({ fonts, previewText, fontSize, textColor, onRemoveFont,
         </div>
       </div>
 
-      {/* Empty State */}
-      {fonts.length === 0 && (
-        <div className="text-center py-12">
-          <div className="text-gray-400 dark:text-gray-500 mb-4">
-            <Copy className="h-12 w-12 mx-auto" />
+      {/* Save Modal */}
+      <Modal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        title="Save Font Comparison"
+        size="default"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Comparison Name
+            </label>
+            <input
+              type="text"
+              value={saveName}
+              onChange={(e) => setSaveName(e.target.value)}
+              placeholder="Enter a name for this comparison..."
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
+                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                       placeholder-gray-500 dark:placeholder-gray-400"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSaveComparison();
+                }
+              }}
+            />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            No fonts to compare
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400">
-            Select fonts from the grid to compare them side by side
-          </p>
-        </div>
-      )}
-
-      {/* Save Comparison Modal */}
-      {showSaveModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 cursor-pointer" onClick={() => setShowSaveModal(false)}>
-          <div 
-            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 max-w-md w-full mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                <Bookmark className="h-5 w-5 mr-2" />
-                Save Font Comparison
-              </h3>
-              <button
-                onClick={() => setShowSaveModal(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer"
-              >
-                <X className="h-5 w-5" />
-              </button>
+          
+          <div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+              Fonts in this comparison ({fonts.length}):
             </div>
-            
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Comparison Name
-              </label>
-              <input
-                type="text"
-                value={saveName}
-                onChange={(e) => setSaveName(e.target.value)}
-                placeholder="Enter a name for this comparison..."
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
-                         focus:ring-2 focus:ring-purple-500 focus:border-transparent
-                         placeholder-gray-500 dark:placeholder-gray-400"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSaveComparison();
-                  } else if (e.key === 'Escape') {
-                    setShowSaveModal(false);
-                  }
-                }}
-              />
-            </div>
-            
-            <div className="mb-4">
-              <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                Fonts in this comparison ({fonts.length}):
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {fonts.map((font, index) => (
-                  <span 
-                    key={index}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded"
-                  >
-                    {font.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-end space-x-3">
-              <button
-                onClick={() => setShowSaveModal(false)}
-                className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveComparison}
-                disabled={!saveName.trim()}
-                className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:text-gray-500
-                         text-white rounded-lg transition-colors disabled:cursor-not-allowed"
-              >
-                Save Comparison
-              </button>
+            <div className="flex flex-wrap gap-1">
+              {fonts.map((font, index) => (
+                <span 
+                  key={index}
+                  className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded"
+                >
+                  {font.name}
+                </span>
+              ))}
             </div>
           </div>
+          
+          <div className="flex items-center justify-end space-x-3 pt-4">
+            <button
+              onClick={() => setShowSaveModal(false)}
+              className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSaveComparison}
+              disabled={!saveName.trim()}
+              className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:text-gray-500
+                       text-white rounded-lg transition-colors disabled:cursor-not-allowed"
+            >
+              Save Comparison
+            </button>
+          </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };
